@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+plotly
+scikit-learn
+joblib
+python-pptx
+openpyxl
+xlrd
+python-calamine
+kaleido
