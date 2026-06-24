@@ -15,6 +15,15 @@ from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
 from pptx.chart.data import CategoryChartData
 from pptx.enum.text import PP_ALIGN
 
+# ── Optional ML stack (graceful if scikit-learn is not installed) ─────────────
+try:
+    import joblib
+    from sklearn.ensemble import GradientBoostingRegressor
+    from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+
 # ── xlrd version compatibility ───────────────────────────────────────────────
 try:
     import xlrd
@@ -93,6 +102,58 @@ div[data-testid="stDataFrame"]:hover,div[data-testid="stTable"]:hover{{border-co
 div[data-baseweb="select"]>div{{background:{card}!important;border:1px solid {border}!important;border-radius:10px!important;}}
 [data-testid="stFileUploader"]{{background:linear-gradient(180deg,rgba(30,144,255,.03),rgba(137,0,255,.02)),{card};border:1px solid {border};border-radius:14px;padding:10px;}}
 h1{{text-shadow:0 0 18px {blue_s};}}
+
+/* ── App header banner ─────────────────────────────────────────────── */
+.app-header{{position:relative;border:1px solid {border};border-radius:18px;padding:18px 24px;margin-bottom:14px;
+  background:linear-gradient(120deg,rgba(30,144,255,.10),rgba(137,0,255,.06) 60%,transparent),{card};
+  box-shadow:0 0 26px {blue_s};overflow:hidden;}}
+.app-header::after{{content:"";position:absolute;inset:0;background:radial-gradient(circle at 90% -20%,{blue_s},transparent 55%);pointer-events:none;}}
+.app-header .ah-title{{font-size:1.9rem;font-weight:800;letter-spacing:.3px;
+  background:linear-gradient(90deg,{blue},#8a5cff 70%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}}
+.app-header .ah-sub{{color:{muted}!important;font-size:.95rem;margin-top:2px;}}
+
+/* ── Context bar (active file + KPIs) ──────────────────────────────── */
+.context-bar{{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:4px 0 16px;}}
+.ctx-chip{{flex:1 1 150px;border:1px solid {border};border-radius:12px;padding:10px 14px;background:{card};
+  transition:all .25s ease;}}
+.ctx-chip:hover{{border-color:{blue};box-shadow:0 0 14px {blue_s};transform:translateY(-2px);}}
+.ctx-chip .cl{{color:{muted}!important;font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;}}
+.ctx-chip .cv{{font-size:1.15rem;font-weight:700;}}
+.ctx-active{{border-left:3px solid {blue};}}
+
+/* ── Hero (landing) ────────────────────────────────────────────────── */
+.hero{{text-align:center;padding:44px 18px 26px;border:1px solid {border};border-radius:22px;margin-bottom:22px;
+  background:radial-gradient(circle at 50% -30%,{blue_s},transparent 60%),{card};box-shadow:0 0 34px {blue_s};}}
+.hero .h-badge{{display:inline-block;border:1px solid {blue};color:{blue}!important;border-radius:999px;
+  padding:4px 14px;font-size:.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}}
+.hero h1.h-title{{font-size:2.9rem;line-height:1.1;font-weight:900;margin:0;
+  background:linear-gradient(90deg,{blue},#8a5cff 75%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:none;}}
+.hero .h-tag{{color:{muted}!important;font-size:1.08rem;margin:14px auto 0;max-width:680px;}}
+.h-pills{{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px;}}
+.h-pill{{border:1px solid {border};border-radius:999px;padding:6px 14px;font-size:.82rem;background:{bg};}}
+.h-pill:hover{{border-color:{blue};box-shadow:0 0 12px {blue_s};}}
+
+/* ── Feature cards ─────────────────────────────────────────────────── */
+.feature-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:6px 0 26px;}}
+.feature-card{{border:1px solid {border};border-radius:16px;padding:18px;background:{card};transition:all .28s ease;}}
+.feature-card:hover{{border-color:{blue};box-shadow:0 0 20px {blue_s};transform:translateY(-3px);}}
+.feature-card .fc-icon{{font-size:1.7rem;}}
+.feature-card .fc-title{{font-weight:800;font-size:1.05rem;margin:6px 0 4px;}}
+.feature-card .fc-desc{{color:{muted}!important;font-size:.88rem;line-height:1.4;}}
+
+/* ── Quick start ───────────────────────────────────────────────────── */
+.quickstart{{border:1px solid {border};border-radius:18px;padding:20px 24px;background:{card};margin-bottom:18px;}}
+.quickstart .qs-h{{font-weight:800;font-size:1.15rem;margin-bottom:12px;}}
+.qs-steps{{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;}}
+.qs-step{{display:flex;gap:12px;align-items:flex-start;}}
+.qs-num{{flex:0 0 30px;height:30px;width:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:800;background:linear-gradient(135deg,{blue},#8a5cff);color:#fff!important;box-shadow:0 0 12px {blue_s};}}
+.qs-txt{{font-size:.9rem;color:{text}!important;}}
+.qs-txt b{{color:{text}!important;}}
+.cta{{text-align:center;border:1px dashed {blue};border-radius:16px;padding:16px;margin-top:8px;background:{bg};font-weight:600;}}
+
+/* ── Section title ─────────────────────────────────────────────────── */
+.section-title{{font-size:1.15rem;font-weight:800;margin:6px 0 2px;padding-left:11px;border-left:4px solid {blue};}}
 </style>""", unsafe_allow_html=True)
 
 
@@ -370,6 +431,130 @@ def compute_health(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ════════════════════════════════════════════════════════════════════════════
+# ML FORECASTING  (trainable daily alarm-volume model)
+# ════════════════════════════════════════════════════════════════════════════
+
+ML_FEATURES = ["dow", "dom", "month", "is_weekend", "lag1", "lag7", "roll3", "roll7"]
+
+
+def build_daily_series(df: pd.DataFrame) -> pd.DataFrame:
+    """Continuous daily alarm-count series (calendar gaps filled with 0)."""
+    if "Time Received" not in df.columns:
+        return pd.DataFrame(columns=["Date", "Count"])
+    tr = df["Time Received"].dropna()
+    if tr.empty:
+        return pd.DataFrame(columns=["Date", "Count"])
+    daily = tr.dt.floor("D").value_counts().sort_index()
+    full = pd.date_range(daily.index.min(), daily.index.max(), freq="D")
+    daily = daily.reindex(full, fill_value=0)
+    out = daily.reset_index()
+    out.columns = ["Date", "Count"]
+    return out
+
+
+def _add_ml_features(daily: pd.DataFrame) -> pd.DataFrame:
+    d = daily.copy()
+    d["Date"]       = pd.to_datetime(d["Date"])
+    d["dow"]        = d["Date"].dt.dayofweek
+    d["dom"]        = d["Date"].dt.day
+    d["month"]      = d["Date"].dt.month
+    d["is_weekend"] = (d["dow"] >= 5).astype(int)
+    d["lag1"]       = d["Count"].shift(1)
+    d["lag7"]       = d["Count"].shift(7)
+    d["roll3"]      = d["Count"].shift(1).rolling(3).mean()
+    d["roll7"]      = d["Count"].shift(1).rolling(7).mean()
+    return d
+
+
+@st.cache_data(show_spinner=False)
+def train_volume_model(daily: pd.DataFrame):
+    """Train a daily-volume forecaster. Returns a dict with model + holdout metrics."""
+    if not SKLEARN_AVAILABLE:
+        return {"ok": False, "reason": "scikit-learn not installed"}
+
+    feat = _add_ml_features(daily).dropna().reset_index(drop=True)
+    if len(feat) < 10:
+        return {"ok": False, "reason": f"only {len(feat)} usable training rows (need ≥ 10)"}
+
+    X, y = feat[ML_FEATURES], feat["Count"]
+    n = len(feat)
+    split = max(int(n * 0.8), n - 14)          # last ≤14 rows held out
+    split = min(split, n - 2)                  # guarantee ≥2 holdout rows
+
+    def _fit(Xt, yt):
+        m = GradientBoostingRegressor(
+            n_estimators=200, max_depth=3, learning_rate=0.05, random_state=42
+        )
+        m.fit(Xt, yt)
+        return m
+
+    eval_model = _fit(X.iloc[:split], y.iloc[:split])
+    y_pred = eval_model.predict(X.iloc[split:]).clip(min=0)
+    y_true = y.iloc[split:].values
+
+    metrics = {
+        "MAE":  float(mean_absolute_error(y_true, y_pred)),
+        "RMSE": float(np.sqrt(mean_squared_error(y_true, y_pred))),
+        "R2":   float(r2_score(y_true, y_pred)) if len(y_true) > 1 else float("nan"),
+    }
+    eval_df = pd.DataFrame({
+        "Date":      feat["Date"].iloc[split:].values,
+        "Actual":    y_true,
+        "Predicted": np.round(y_pred, 1),
+    })
+
+    full_model = _fit(X, y)                    # refit on everything for forecasting
+    return {
+        "ok": True, "model": full_model, "metrics": metrics,
+        "eval_df": eval_df, "n_train": split, "n_test": n - split,
+        "importances": dict(zip(ML_FEATURES, full_model.feature_importances_)),
+    }
+
+
+def forecast_volume(model, daily: pd.DataFrame, horizon: int) -> pd.DataFrame:
+    """Recursive multi-step forecast of daily alarm counts."""
+    hist = _add_ml_features(daily)[["Date", "Count"]].copy()
+    rows = []
+    last_known = float(hist["Count"].iloc[-1])
+    for _ in range(horizon):
+        nxt = hist["Date"].iloc[-1] + pd.Timedelta(days=1)
+        tmp = pd.concat([hist, pd.DataFrame([{"Date": nxt, "Count": np.nan}])],
+                        ignore_index=True)
+        # 1-row DataFrame (keeps feature names) of floats (avoids object-dtype fillna).
+        feat_row = _add_ml_features(tmp).iloc[[-1]][ML_FEATURES].astype(float)
+        # roll/lag features can be NaN on very short history → fall back to last count.
+        feat_row = feat_row.fillna(last_known)
+        yhat = max(0.0, float(model.predict(feat_row)[0]))
+        rows.append({"Date": nxt, "Forecast": round(yhat, 1)})
+        hist = pd.concat([hist, pd.DataFrame([{"Date": nxt, "Count": yhat}])],
+                         ignore_index=True)
+        last_known = yhat
+    return pd.DataFrame(rows)
+
+
+def load_alarm_history(file_bytes: bytes, file_name: str) -> pd.DataFrame:
+    """Load + clean the alarm sheet of an uploaded workbook (auto-picks EventLog)."""
+    sheets = get_sheets(file_bytes, file_name)
+    if not sheets:
+        return pd.DataFrame()
+    pick = next((s for s in sheets if str(s).strip().lower() == "eventlog"), sheets[0])
+    return clean_df(read_sheet(file_bytes, file_name, pick))
+
+
+def combine_histories(frames: list) -> pd.DataFrame:
+    """Concatenate alarm frames and drop duplicate alarms (overlapping exports)."""
+    frames = [f for f in frames if f is not None and not f.empty]
+    if not frames:
+        return pd.DataFrame()
+    combined = pd.concat(frames, ignore_index=True)
+    keys = [c for c in ["Time Received", "Device", "Name", "Message", "Level", "BIU"]
+            if c in combined.columns]
+    if keys:
+        combined = combined.drop_duplicates(subset=keys).reset_index(drop=True)
+    return combined
+
+
+# ════════════════════════════════════════════════════════════════════════════
 # PPT EXPORT
 # ════════════════════════════════════════════════════════════════════════════
 
@@ -459,10 +644,74 @@ def build_ppt(df, source_file, sheet_name, template_bytes=None):
 # ════════════════════════════════════════════════════════════════════════════
 # MAIN UI
 # ════════════════════════════════════════════════════════════════════════════
-st.title("🔔 NOC Alarm Intelligence Dashboard")
+
+def render_landing():
+    """Pre-upload landing page: hero + feature cards + quick-start + CTA."""
+    st.markdown(
+        """
+        <div class="hero">
+          <div class="h-badge">DTS Wireless · NOC</div>
+          <h1 class="h-title">NOC Alarm Intelligence</h1>
+          <div class="h-tag">Turn raw alarm EventLog exports into health scores, predictive
+          insight, peak-hour patterns and editable PowerPoint reports — all in your browser.</div>
+          <div class="h-pills">
+            <span class="h-pill">📊 Analytics</span>
+            <span class="h-pill">🏥 Device Health</span>
+            <span class="h-pill">🔮 Predictions</span>
+            <span class="h-pill">🤖 ML Forecast</span>
+            <span class="h-pill">⚖️ File Comparison</span>
+            <span class="h-pill">📥 PPT / CSV Export</span>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    features = [
+        ("📊", "Overview", "KPIs, alarms by level &amp; BIU, and a daily timeline at a glance."),
+        ("🔍", "Alarm Analysis", "Level pies, duration boxes, device &amp; BIU heatmaps, sunburst hierarchy."),
+        ("🏥", "Device Health", "0–100 health score per device with MTBF, MTTR and a reliability map."),
+        ("🕐", "Time Patterns", "Hour-of-day, day-of-week and peak-hour heatmaps to spot recurring spikes."),
+        ("🔮", "Predictions", "Per-device next-alarm estimate &amp; urgency from inter-arrival statistics."),
+        ("🤖", "ML Forecast", "A trained model that forecasts upcoming daily alarm volume."),
+    ]
+    cards = "".join(
+        f'<div class="feature-card"><div class="fc-icon">{i}</div>'
+        f'<div class="fc-title">{t}</div><div class="fc-desc">{d}</div></div>'
+        for i, t, d in features
+    )
+    st.markdown(f'<div class="feature-grid">{cards}</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        """
+        <div class="quickstart">
+          <div class="qs-h">🚀 Quick Start</div>
+          <div class="qs-steps">
+            <div class="qs-step"><div class="qs-num">1</div><div class="qs-txt">
+              Export the <b>EventLog</b> alarm report (<b>.xls</b> or <b>.xlsx</b>) from your alarm system.</div></div>
+            <div class="qs-step"><div class="qs-num">2</div><div class="qs-txt">
+              In the <b>sidebar</b>, upload one or more files under <b>📂 Data Sources</b>.</div></div>
+            <div class="qs-step"><div class="qs-num">3</div><div class="qs-txt">
+              Pick the <b>workbook</b> and <b>sheet</b> to analyse (multi-file enables Compare mode).</div></div>
+            <div class="qs-step"><div class="qs-num">4</div><div class="qs-txt">
+              Explore the tabs, then download a <b>PowerPoint</b> report or <b>CSV</b> tables.</div></div>
+          </div>
+          <div class="cta">⬅️ &nbsp; Upload your Excel files in the sidebar to begin</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 st.markdown(
-    "Multi-file upload  ·  Alarm analysis  ·  Device health scoring  ·  "
-    "Predictive analytics  ·  File comparison"
+    """
+    <div class="app-header">
+      <div class="ah-title">🔔 NOC Alarm Intelligence Dashboard</div>
+      <div class="ah-sub">Multi-file upload · Alarm analysis · Device health scoring ·
+      Predictive analytics · ML forecasting · File comparison</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
 # ── Sidebar: upload ──────────────────────────────────────────────────────────
@@ -479,7 +728,7 @@ if uploaded:
             st.sidebar.error(f"❌ {uf.name}: {e}")
 
 if not wmap:
-    st.info("⬆️  Upload one or more Excel files (.xls / .xlsx) to begin.")
+    render_landing()
     st.stop()
 
 # ── Sidebar: workbook / sheet selector ──────────────────────────────────────
@@ -530,13 +779,34 @@ if "Time Received" in filtered.columns and filtered["Time Received"].notna().any
 
 st.sidebar.success(f"✅ {len(filtered):,} alarms loaded")
 
+# ── Context bar: active file + quick KPIs ────────────────────────────────────
+_n_dev = filtered["Device"].nunique() if "Device" in filtered.columns else 0
+_n_biu = filtered["BIU"].nunique() if "BIU" in filtered.columns else 0
+if "Time Received" in filtered.columns and filtered["Time Received"].notna().any():
+    _span = f"{filtered['Time Received'].min():%b %d} → {filtered['Time Received'].max():%b %d, %Y}"
+else:
+    _span = "—"
+st.markdown(
+    f"""
+    <div class="context-bar">
+      <div class="ctx-chip ctx-active"><div class="cl">Active Source</div>
+        <div class="cv">{sel_wb} › {sel_sheet}</div></div>
+      <div class="ctx-chip"><div class="cl">Alarms</div><div class="cv">{len(filtered):,}</div></div>
+      <div class="ctx-chip"><div class="cl">Devices</div><div class="cv">{_n_dev}</div></div>
+      <div class="ctx-chip"><div class="cl">BIUs</div><div class="cv">{_n_biu}</div></div>
+      <div class="ctx-chip"><div class="cl">Date Range</div><div class="cv">{_span}</div></div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # ════════════════════════════════════════════════════════════════════════════
 # TABS
 # ════════════════════════════════════════════════════════════════════════════
-tab_ov, tab_an, tab_hlt, tab_tm, tab_pred, tab_cmp = st.tabs([
+tab_ov, tab_an, tab_hlt, tab_tm, tab_pred, tab_ml, tab_cmp = st.tabs([
     "📊 Overview", "🔍 Alarm Analysis", "🏥 Device Health",
-    "🕐 Time Patterns", "🔮 Predictions", "⚖️ Compare Files",
+    "🕐 Time Patterns", "🔮 Predictions", "🤖 ML Forecast", "⚖️ Compare Files",
 ])
 
 
@@ -869,15 +1139,63 @@ with tab_pred:
         "Predictions use exponentially-weighted mean inter-arrival time per device.  "
         "Higher Confidence % = more regular, predictable alarm pattern."
     )
+
+    with st.expander("ℹ️  How predictions work (no ML training required)"):
+        st.markdown(
+            "This engine is a **live statistical estimate**, not a trained model — it is "
+            "recomputed from the uploaded data every time, so there is nothing to train.\n\n"
+            "For each device:\n"
+            "1. **Inter-arrival times** — the gaps (in hours) between consecutive alarms.\n"
+            "2. **Exponentially-weighted mean (EWM)** of those gaps — recent gaps count more, "
+            "so the estimate adapts to a changing alarm rate.\n"
+            "3. **Predicted next alarm** = *last alarm time* + *EWM gap*.\n"
+            "4. **Confidence %** = `100 × (1 − CV)`, where CV is the coefficient of variation "
+            "(std ÷ mean) of the gaps. A regular, evenly-spaced pattern → high confidence; "
+            "an erratic one → low confidence.\n\n"
+            "👉 For a *trained* model that forecasts future alarm volume, see the "
+            "**🤖 ML Forecast** tab."
+        )
+
     hdf_p = compute_health(filtered)
-    now   = datetime.now()
+
+    # ── Reference time ────────────────────────────────────────────────────────
+    # Urgency must be measured against a sensible "now". When the uploaded data is
+    # historical (e.g. months old), datetime.now() makes EVERY device look overdue,
+    # so default the anchor to the latest alarm actually present in the data.
+    data_latest = (
+        filtered["Time Received"].max()
+        if "Time Received" in filtered.columns and filtered["Time Received"].notna().any()
+        else None
+    )
+    data_earliest = (
+        filtered["Time Received"].min()
+        if "Time Received" in filtered.columns and filtered["Time Received"].notna().any()
+        else None
+    )
+
+    anchor_choice = st.radio(
+        "Measure predictions relative to:",
+        ["Latest alarm in data", "Now (wall clock)"],
+        index=0, horizontal=True,
+        help="Historical exports are usually best measured from the last alarm in the file.",
+    )
+    if anchor_choice == "Now (wall clock)" or data_latest is None:
+        ref_time = datetime.now()
+    else:
+        ref_time = data_latest.to_pydatetime() if hasattr(data_latest, "to_pydatetime") else data_latest
+
+    if data_earliest is not None and data_latest is not None:
+        st.caption(
+            f"📅 Data spans **{data_earliest:%Y-%m-%d %H:%M}** → **{data_latest:%Y-%m-%d %H:%M}**  ·  "
+            f"reference time = **{ref_time:%Y-%m-%d %H:%M}** ({anchor_choice})."
+        )
 
     if hdf_p.empty or "Predicted Next" not in hdf_p.columns:
         st.warning("Need at least 2 recorded alarms per device to generate predictions.")
     else:
         pred = hdf_p.dropna(subset=["Predicted Next"]).copy()
         pred["Hours Until Next"] = (
-            (pred["Predicted Next"] - now).dt.total_seconds() / 3600
+            (pred["Predicted Next"] - ref_time).dt.total_seconds() / 3600
         ).round(1)
 
         def urgency(h):
@@ -920,10 +1238,15 @@ with tab_pred:
                 "MTBF: %{customdata[1]} hrs<br>Confidence: %{customdata[2]}%%<br>"
                 "Typical Level: %{customdata[3]}<extra></extra>"
             ))
-        # Plotly add_vline needs datetime as ISO string, not datetime object
-        fig_pred.add_vline(x=now.strftime("%Y-%m-%d %H:%M:%S"),
-                           line_dash="dash", line_color="gray",
-                           annotation_text="Now", annotation_position="top right")
+        # NOTE: add_vline with a string x + annotation_text crashes on plotly 6.x
+        # (it averages the x-coords → int + str TypeError). Draw the line with a
+        # real datetime and add the label as a separate annotation instead.
+        fig_pred.add_vline(x=ref_time, line_dash="dash", line_color="gray")
+        fig_pred.add_annotation(
+            x=ref_time, yref="paper", y=1.0, yanchor="bottom",
+            text="⏱ Reference", showarrow=False,
+            font=dict(color="gray", size=12),
+        )
         fig_pred.update_layout(yaxis={"categoryorder":"total ascending"})
         st.plotly_chart(apply_theme(fig_pred), use_container_width=True, config=PCFG)
 
@@ -962,7 +1285,160 @@ with tab_pred:
 
 
 # ════════════════════════════════════════════════════════════════════════════
-# TAB 6 — COMPARE FILES
+# TAB 6 — ML FORECAST  (trained model)
+# ════════════════════════════════════════════════════════════════════════════
+with tab_ml:
+    st.markdown('<div class="section-title">🤖 ML Alarm-Volume Forecast</div>',
+                unsafe_allow_html=True)
+    st.caption(
+        "A **trained** Gradient Boosting model that learns daily alarm patterns "
+        "(day-of-week, recent lags &amp; rolling averages) and forecasts upcoming alarm volume. "
+        "Unlike the 🔮 Predictions tab (a live statistic), this model is fit on your data and can be exported."
+    )
+
+    if not SKLEARN_AVAILABLE:
+        st.error("scikit-learn is required for ML forecasting.  Install it with:  "
+                 "`pip install scikit-learn`")
+    else:
+        # ── Training data: current sheet + any extra historical files ─────────
+        st.markdown('<div class="section-title">📈 Training Data</div>',
+                    unsafe_allow_html=True)
+        st.caption(
+            "The model trains on the **current sheet's full history** (sidebar filters are "
+            "ignored here). Add more **historical EventLog files for the *same site*** below to "
+            "extend the training window — more continuous history → better accuracy."
+        )
+        extra_files = st.file_uploader(
+            "➕ Add historical alarm files to train on (.xls / .xlsx)",
+            type=["xls", "xlsx"], accept_multiple_files=True, key="ml_train_files",
+        )
+
+        frames = [df]                                   # current sheet, unfiltered
+        sources = [(f"{sel_wb} › {sel_sheet} (current)", len(df))]
+        if extra_files:
+            for uf in extra_files:
+                try:
+                    h = load_alarm_history(uf.getvalue(), uf.name)
+                    if h.empty or "Time Received" not in h.columns:
+                        st.warning(f"⚠️ No alarm data found in **{uf.name}** — skipped.")
+                        continue
+                    frames.append(h)
+                    sources.append((uf.name, len(h)))
+                except Exception as e:
+                    st.error(f"Could not read {uf.name}: {e}")
+
+        train_df = combine_histories(frames)
+        daily = build_daily_series(train_df)
+
+        # Show what the model is training on
+        src_lines = "  ·  ".join(f"{name} ({n:,})" for name, n in sources)
+        st.markdown(
+            f"**Training on {len(sources)} source(s):** {src_lines}  "
+            f"→ **{len(train_df):,}** unique alarms after de-duplication."
+        )
+        if len(sources) > 1:
+            st.info(
+                "ℹ️ Combining multiple files trains **one** volume model across all of them. "
+                "For a coherent per-site forecast, only add files from the **same** monitored system."
+            )
+        # Let the user keep a growing master history to re-upload next time
+        if "Time Received" in train_df.columns:
+            st.download_button(
+                "⬇️  Download combined history (CSV — keep & re-upload to accumulate)",
+                train_df.to_csv(index=False).encode(),
+                f"alarm_training_history_{sel_wb}.csv", "text/csv",
+                key="dl_train_hist",
+            )
+
+        if daily.empty or len(daily) < 21:
+            st.warning(
+                f"Need at least **21 days** of alarm history to train a reliable model "
+                f"(current training set spans **{len(daily)}** day(s)). "
+                "Add more historical files above, or upload a file with a longer date range."
+            )
+        else:
+            st.markdown(
+                f"**Training window:** {daily['Date'].min():%Y-%m-%d} → "
+                f"{daily['Date'].max():%Y-%m-%d}  ·  {len(daily)} days  ·  "
+                f"{int(daily['Count'].sum()):,} total alarms"
+            )
+            result = train_volume_model(daily)
+
+            if not result.get("ok"):
+                st.warning(f"Could not train a model: {result.get('reason')}.")
+            else:
+                m = result["metrics"]
+                c1, c2, c3, c4 = st.columns(4)
+                c1.metric("Train / Test days", f"{result['n_train']} / {result['n_test']}")
+                c2.metric("MAE", f"{m['MAE']:.2f}", help="Mean absolute error (alarms/day)")
+                c3.metric("RMSE", f"{m['RMSE']:.2f}")
+                c4.metric("R²", "n/a" if np.isnan(m["R2"]) else f"{m['R2']:.2f}",
+                          help="1.0 = perfect; ≤0 = worse than predicting the average")
+
+                # Actual vs predicted on the holdout
+                st.markdown('<div class="section-title">Model Accuracy (holdout)</div>',
+                            unsafe_allow_html=True)
+                ev = result["eval_df"]
+                fig_ev = go.Figure()
+                fig_ev.add_trace(go.Scatter(x=ev["Date"], y=ev["Actual"], mode="lines+markers",
+                                            name="Actual", line=dict(color=blue)))
+                fig_ev.add_trace(go.Scatter(x=ev["Date"], y=ev["Predicted"], mode="lines+markers",
+                                            name="Predicted", line=dict(color="#e53935", dash="dash")))
+                fig_ev.update_layout(title="Actual vs Predicted Daily Alarms (test period)",
+                                     yaxis=dict(tickformat="d"))
+                st.plotly_chart(apply_theme(fig_ev), use_container_width=True, config=PCFG)
+
+                # Forecast
+                st.markdown('<div class="section-title">Forecast</div>', unsafe_allow_html=True)
+                horizon = st.slider("Forecast horizon (days)", 7, 30, 14)
+                fc = forecast_volume(result["model"], daily, horizon)
+                fig_fc = go.Figure()
+                fig_fc.add_trace(go.Scatter(x=daily["Date"], y=daily["Count"], mode="lines",
+                                            name="History", line=dict(color=blue)))
+                fig_fc.add_trace(go.Scatter(x=fc["Date"], y=fc["Forecast"], mode="lines+markers",
+                                            name="Forecast", line=dict(color="#fb8c00", dash="dot")))
+                fig_fc.add_vline(x=daily["Date"].max(), line_dash="dash", line_color="gray")
+                fig_fc.add_annotation(x=daily["Date"].max(), yref="paper", y=1.0, yanchor="bottom",
+                                      text="Forecast start", showarrow=False,
+                                      font=dict(color="gray", size=12))
+                fig_fc.update_layout(title=f"Next {horizon}-Day Alarm-Volume Forecast",
+                                     yaxis=dict(tickformat="d"))
+                st.plotly_chart(apply_theme(fig_fc), use_container_width=True, config=PCFG)
+                st.metric("Forecast total (next %d days)" % horizon, f"{fc['Forecast'].sum():.0f}")
+
+                col_a, col_b = st.columns(2)
+                col_a.download_button(
+                    "⬇️  Download Forecast (CSV)",
+                    fc.assign(Date=fc["Date"].dt.strftime("%Y-%m-%d")).to_csv(index=False).encode(),
+                    "alarm_volume_forecast.csv", "text/csv")
+
+                # Export the trained model
+                try:
+                    mbuf = io.BytesIO()
+                    joblib.dump({"model": result["model"], "features": ML_FEATURES}, mbuf)
+                    mbuf.seek(0)
+                    col_b.download_button(
+                        "⬇️  Download Trained Model (.joblib)", mbuf.getvalue(),
+                        f"alarm_volume_model_{sel_wb}.joblib", "application/octet-stream")
+                except Exception as e:
+                    col_b.info(f"Model export unavailable: {e}")
+
+                # Feature importance
+                with st.expander("🔬 Feature importance & caveats"):
+                    imp = (pd.Series(result["importances"]).sort_values(ascending=True))
+                    fig_imp = px.bar(imp, orientation="h", title="What drives the forecast",
+                                     labels={"value": "Importance", "index": "Feature"})
+                    fig_imp.update_layout(showlegend=False)
+                    st.plotly_chart(apply_theme(fig_imp), use_container_width=True, config=PCFG)
+                    st.caption(
+                        "Caveats: alarm data is often sparse and bursty, so daily-volume forecasts "
+                        "are indicative, not exact. The model is trained only on the current selection "
+                        "and is re-trained whenever the data or filters change."
+                    )
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# TAB 7 — COMPARE FILES
 # ════════════════════════════════════════════════════════════════════════════
 with tab_cmp:
     st.subheader("⚖️  Multi-File Comparison")
